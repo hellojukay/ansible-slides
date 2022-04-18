@@ -31,7 +31,7 @@ BBFE-武汉 李聪
 
 # Ansible 是什么?
 
-Ansible 是一个 python 语言编写的 IT 自动化工具.
+Ansible 是一个 python 语言编写的 IT 自动化工具, Ansible 的源代码在 github 上开源 。
 -  **Agentless** - Ansible 管理目标机器，并不需要 agent 部署再目标机器上
 -  **Python** - Ansible 管理服务器，只需要目标机器上安装 python 2.4+ 
 -  **SSH** - Ansible 和目标机器之间使用 SSH 协议通讯
