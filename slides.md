@@ -166,6 +166,10 @@ ansible-playbook -i inventory -playbook.yml -tags file
 ```
 ansible-playbook -i inventory -playbook.yml --check
 ```
+4. `-e` 传变量参数
+```
+ansible-playbook -i inventory -playbook.yml -e 'name=Luas' -e 'dir=/tmp'
+```
 ---
 
 # 常用模块
