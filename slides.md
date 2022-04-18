@@ -21,164 +21,135 @@ drawings:
   persist: false
 ---
 
-# Welcome to Slidev
+# Ansible 介绍
 
-Presentation slides for developers
+BBFE-武汉 李聪
 
-<div class="pt-12">
-  <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
-    Press Space for next page <carbon:arrow-right class="inline"/>
-  </span>
-</div>
 
-<div class="abs-br m-6 flex gap-2">
-  <button @click="$slidev.nav.openInEditor()" title="Open in Editor" class="text-xl icon-btn opacity-50 !border-none !hover:text-white">
-    <carbon:edit />
-  </button>
-  <a href="https://github.com/slidevjs/slidev" target="_blank" alt="GitHub"
-    class="text-xl icon-btn opacity-50 !border-none !hover:text-white">
-    <carbon-logo-github />
-  </a>
-</div>
-
-<!--
-The last comment block of each slide will be treated as slide notes. It will be visible and editable in Presenter Mode along with the slide. [Read more in the docs](https://sli.dev/guide/syntax.html#notes)
--->
 
 ---
 
-# What is Slidev?
+# Ansible 是什么?
 
-Slidev is a slides maker and presenter designed for developers, consist of the following features
-
-- 📝 **Text-based** - focus on the content with Markdown, and then style them later
-- 🎨 **Themable** - theme can be shared and used with npm packages
-- 🧑‍💻 **Developer Friendly** - code highlighting, live coding with autocompletion
-- 🤹 **Interactive** - embedding Vue components to enhance your expressions
-- 🎥 **Recording** - built-in recording and camera view
-- 📤 **Portable** - export into PDF, PNGs, or even a hostable SPA
-- 🛠 **Hackable** - anything possible on a webpage
-
+Ansible 是一个 python 语言编写的 IT 自动化工具.
+-  **Agentless** - Ansible 管理目标机器，并不需要 agent 部署再目标机器上
+-  **Python** - Ansible 管理服务器，只需要目标机器上安装 python 2.4+ 
+-  **SSH** - Ansible 和目标机器之间使用 SSH 协议通讯
+-  **Fast** - Ansible 可以同时管理成百上千台服务器
+-  **Scalable** - Ansible 是插件化的，编写插件也非常简单
 <br>
 <br>
 
-Read more about [Why Slidev?](https://sli.dev/guide/why)
+Read more about [Ansible?](https://www.ansible.com/)
 
-<!--
-You can have `style` tag in markdown to override the style for the current page.
-Learn more: https://sli.dev/guide/syntax#embedded-styles
--->
-
-<style>
-h1 {
-  background-color: #2B90B6;
-  background-image: linear-gradient(45deg, #4EC5D4 10%, #146b8c 20%);
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
 
 ---
 
-# Navigation
+# 安装
+Ansible 是 Python 编写的一个包，我们可以使用 pip 安装 Ansible.
+> Ansible 能管理 windows , 但是 Ansible本身 不能运行再 Windows 上，Ansible 能运行再 Windows 的 WSL 里面。
+```
+pip install ansible
+```
+```
+vagrant@archlinux ~ $ ansible --version
+ansible [core 2.12.4]
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = ['/home/vagrant/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python3.10/site-packages/ansible
+  ansible collection location = /home/vagrant/.ansible/collections:/usr/share/ansible/collections
+  executable location = /usr/bin/ansible
+  python version = 3.10.4 (main, Mar 23 2022, 23:05:40) [GCC 11.2.0]
+  jinja version = 3.0.3
+  libyaml = True
+```
+安装成功以后，系统中会加入一系列 ansible 开头的命令 ansible-* 。
+---
 
-Hover on the bottom-left corner to see the navigation's controls panel, [learn more](https://sli.dev/guide/navigation.html)
+# Ansible 命令基本用法
+ansible <主机>   <模块>   -a   <模块参数>
+```
+vagrant@archlinux ~ $ ansible localhost -m shell -a "date"
+[WARNING]: No inventory was parsed, only implicit localhost is available
+localhost | CHANGED | rc=0 >>
+Mon Apr 18 08:19:47 AM UTC 2022
+vagrant@archlinux ~ $ ansible localhost -m shell -a "pwd"
+[WARNING]: No inventory was parsed, only implicit localhost is available
+localhost | CHANGED | rc=0 >>
+/home/vagrant
+```
+Ansible 的默认模块是 command 模块
+```
+vagrant@archlinux ~ $ ansible localhost -a "pwd"
+[WARNING]: No inventory was parsed, only implicit localhost is available
+localhost | CHANGED | rc=0 >>
+/home/vagrant
+```
 
-### Keyboard Shortcuts
+---
 
+# 名词解释
+Ansible 不仅 ansible 命令那么简单，要使用好 Ansible , 还需要了解一些概念。
 |     |     |
 | --- | --- |
-| <kbd>right</kbd> / <kbd>space</kbd>| next animation or slide |
-| <kbd>left</kbd>  / <kbd>shift</kbd><kbd>space</kbd> | previous animation or slide |
-| <kbd>up</kbd> | previous slide |
-| <kbd>down</kbd> | next slide |
-
-<!-- https://sli.dev/guide/animations.html#click-animations -->
-<img
-  v-click
-  class="absolute -bottom-9 -left-7 w-80 opacity-50"
-  src="https://sli.dev/assets/arrow-bottom-left.svg"
-/>
-<p v-after class="absolute bottom-23 left-45 opacity-30 transform -rotate-10">Here!</p>
+| Inventory | 记录被管理主机的文件 |
+| Taks      | Ansible 执行的任务  |
+| Playbooks | Ansible 脚本，Yaml 格式或者 JSON 格式,包含一系列的 Task |
+| Roles | 一系列 playbook 的组合 |
+| Ansible-galaxy | Ansible Role 的管理工具，可以共享，下载 Roles |
 
 ---
-layout: image-right
-image: https://source.unsplash.com/collection/94734566/1920x1080
----
 
-# Code
+# Inventory
+Inventory 是一个类似 ini 格式的文件，它可以对服务器进行分组
+```
+mail.example.com
 
-Use code snippets and get the highlighting directly![^1]
+[dbservers]
+one.example.com
+two.example.com
+three.example.com
+```
+更加完整的文件如下, 跟多参数可以参考 [Ansible Doc](https://docs.ansible.com/ansible/2.3/intro_inventory.html#list-of-behavioral-inventory-parameters)
+```
+mail.example.com ansible_ssh_port=22 ansible_ssh_host=mail.example.com ansible_ssh_user=root ansible_ssh_private_key_file=password
 
-```ts {all|2|1-6|9|all}
-interface User {
-  id: number
-  firstName: string
-  lastName: string
-  role: string
-}
-
-function updateUser(id: number, update: User) {
-  const user = getUser(id)
-  const newUser = { ...user, ...update }
-  saveUser(id, newUser)
-}
+[dbservers]
+one.example.com ansible_ssh_port=22 ansible_ssh_host=mail.example.com ansible_ssh_user=root ansible_ssh_private_key_file=password
+two.example.com ansible_ssh_port=22 ansible_ssh_host=mail.example.com ansible_ssh_user=root ansible_ssh_private_key_file=password
+three.example.com ansible_ssh_port=22 ansible_ssh_host=mail.example.com ansible_ssh_user=root ansible_ssh_private_key_file=password
 ```
 
-<arrow v-click="3" x1="400" y1="420" x2="230" y2="330" color="#564" width="3" arrowSize="1" />
-
-[^1]: [Learn More](https://sli.dev/guide/syntax.html#line-highlighting)
-
-<style>
-.footnotes-sep {
-  @apply mt-20 opacity-10;
-}
-.footnotes {
-  @apply text-sm opacity-75;
-}
-.footnote-backref {
-  display: none;
-}
-</style>
+> 如果需要使用账号密码进行 SSH 认证，需要控制机器上安装 sshpass 命令。
 
 ---
 
-# Components
+# Playbook
 
-<div grid="~ cols-2 gap-4">
-<div>
-
-You can use Vue components directly inside your slides.
-
-We have provided a few built-in components like `<Tweet/>` and `<Youtube/>` that you can use directly. And adding your custom components is also super easy.
-
-```html
-<Counter :count="10" />
-```
-
-<!-- ./components/Counter.vue -->
-<Counter :count="10" m="t-4" />
-
-Check out [the guides](https://sli.dev/builtin/components.html) for more.
-
-</div>
-<div>
-
-```html
-<Tweet id="1390115482657726468" />
-```
-
-<Tweet id="1390115482657726468" scale="0.65" />
-
-</div>
-</div>
-
-
+Ansible 的 playbook 是一个 Yaml 或者 JSON 语言编写的脚本。大致如下格式:
+```yaml
 ---
-class: px-20
+- hosts: webservers
+  vars:
+    http_port: 80
+  remote_user: root
+  tasks:
+  - name: ensure apache is at the latest version
+    yum: name=httpd state=latest
+  - name: write the apache config file
+    template: src=/srv/httpd.j2 dest=/etc/httpd.conf
+    notify:
+    - restart apache
+  - name: ensure apache is running (and enable it at boot)
+    service: name=httpd state=started enabled=yes
+  handlers:
+    - name: restart apache
+      service: name=httpd state=restarted
+```
+执行
+```
+ansible-playbook -i inventory palybook.yaml
+```
 ---
 
 # Themes
