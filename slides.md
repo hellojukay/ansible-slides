@@ -67,7 +67,7 @@ ansible [core 2.12.4]
 ---
 
 # Ansible 命令基本用法
-ansible <主机>   <模块>   -a   <模块参数>
+ansible <主机>   <模块>   -a   <模块参数> ， 这种使用方式叫 ansible ad-hoc 。
 ```
 vagrant@archlinux ~ $ ansible localhost -m shell -a "date"
 [WARNING]: No inventory was parsed, only implicit localhost is available
@@ -93,10 +93,13 @@ Ansible 不仅 ansible 命令那么简单，要使用好 Ansible , 还需要了�
 |     |     |
 | --- | --- |
 | Inventory | 记录被管理主机的文件 |
-| Taks      | Ansible 执行的任务  |
-| Playbooks | Ansible 脚本，Yaml 格式或者 JSON 格式,包含一系列的 Task |
+| ad-hoc    | 快速简短的 Ansible 命令 |
+| Module    | Ansible 的模块，具体用来操作目标机器的脚本 |
+| Plugin    | 用来弥补内置的 ansible 模块不足，用户自定义模块的方式 |
+| Playbooks | Ansible 脚本，Yaml 格式或者 JSON 格式,包含一系列的模块调用 |
 | Roles | 一系列 playbook 的组合 |
-| Ansible-galaxy | Ansible Role 的管理工具，可以共享，下载 Roles |
+| Collection | 是 Ansible 2.9 以后的概念，包含 module , plugin , roles 等 |
+| Ansible-galaxy | Ansible Role, Collection 的管理工具，可以共享，下载 Roles, Collection |
 
 ---
 
@@ -189,7 +192,31 @@ ansible-playbook -i inventory -playbook.yml -e 'name=Luas' -e 'dir=/tmp'
 ---
 
 # Ansible Role
+* https://galaxy.ansible.com/
+* ansible-galaxy role init name
+* ansible-galaxy install geerlingguy.docker
+* 使用方式
+```
+- hosts: all
 
+  vars:
+    pip_install_packages:
+      - name: docker
+
+  roles:
+    - geerlingguy.pip
+    - role: geerlingguy.docker
+      vars:
+        docker_version: 19.04
+```
+
+---
+
+# 插件(自定义模块)
+* Ansible 运行原理
+* 参数与输出
+* ansible.cfg
+* 环境依赖问题
 ---
 
 # 演示点啥
@@ -198,10 +225,8 @@ ansible-playbook -i inventory -playbook.yml -e 'name=Luas' -e 'dir=/tmp'
 2. 修改配置文件
 3. 安装软件
 4. 关闭服务
-
----
-
-# 插件开发
+5. 定义 role
+6. 写个插件
 
 ---
 
