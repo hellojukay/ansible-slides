@@ -104,7 +104,7 @@ Ansible 不仅 ansible 命令那么简单，要使用好 Ansible , 还需要了�
 ---
 
 # Inventory
-Inventory 是一个类似 ini 格式的文件，它可以对服务器进行分组
+Inventory 是一个类似 ini 格式的文件，它可以对服务器进行分组, Inventory 也是可以是一个可执行程序，这个程序能输出机器信息。
 ```
 mail.example.com
 
@@ -113,7 +113,7 @@ one.example.com
 two.example.com
 three.example.com
 ```
-更加完整的文件如下, 跟多参数可以参考 [Ansible Doc](https://docs.ansible.com/ansible/2.3/intro_inventory.html#list-of-behavioral-inventory-parameters)
+更加完整的文件如下, 更多参数可以参考 [Ansible Doc](https://docs.ansible.com/ansible/2.3/intro_inventory.html#list-of-behavioral-inventory-parameters)
 ```
 mail.example.com ansible_ssh_port=22 ansible_ssh_host=mail.example.com ansible_ssh_user=root ansible_ssh_private_key_file=password
 
